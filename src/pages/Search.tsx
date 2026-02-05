@@ -22,6 +22,12 @@ const style = {
         flexDirection: 'column',
         margin: '5% 20%',
         justifyContent: 'center',
+    },
+    pagination: {
+        display: 'flex',
+        flexDirection: 'row',
+        margin: '0% 20%',
+        justifyContent: 'space-around',
     }
 
 }
@@ -102,8 +108,19 @@ const SearchPage:React.FC = () => {
                 <RecipeCard title={'wittle test'} tags={['honk', 'beep', 'meow']} time={'10'}/>
                <RecipeCard title={'wittle test'} tags={['honk', 'beep', 'meow']} time={'10'}/>
             </div>
-            <div>
-                pagination here
+            <div style={style.pagination}>
+                <div>
+                    <select>
+                        <option>10</option>
+                        <option>25</option>
+                        <option>50</option>
+                    </select>
+                </div>
+                <div>
+                    <button>prev</button>
+                    <input placeholder=""/>
+                    <button>next</button>
+                </div>
             </div>
         </div>
     )

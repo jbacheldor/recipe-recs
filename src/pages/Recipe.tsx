@@ -1,10 +1,10 @@
 
 
-const Recipe:React.FC = () => {
+const RecipePage:React.FC = () => {
     return (
         <>
         </>
     )
 }
 
-export default Recipe;
+export default RecipePage;

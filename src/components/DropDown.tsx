@@ -1,6 +1,5 @@
 import { useState } from "react"
 
-
 type Props = {
     options: string[],
     title?: string,
@@ -11,20 +10,38 @@ type Props = {
 const style = {
     filter: {
         display: 'block',
-        scrollY: 'true',
-        height: '300px',
+        // scrollY: 'true',
+        // maxHeight: '200px',
         position: 'absolute',
-        // overflowY: 'true'
+        backgroundColor: '#f6f6f6',
+        borderRadius: '5px',
+        border: '1px black solid',
+        marginTop: '5px',
+        padding: '5px',
+        // overflowY: 'hidden'
     },
     inside: {
         display: 'flex',
         'flexDirection': 'column',
         width: '200px',
-        padding: '10px'
+        padding: '10px',
+        marginBottom: '5px'
     },
     options: {
         display: 'flex',
-        'flexDirection': 'column'   
+        'flexDirection': 'column',
+        overflowY: 'scroll',
+        maxHeight: '100px'
+    },
+    buttons: {
+        padding: '5px',
+        margin: '0 10px'
+    },
+    buttonGr: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        margin: '5px 10px'
     }
 }
 
@@ -68,12 +85,25 @@ const DropDown:React.FC<Props> = ({options, selected, onSelect}) => {
         setFiltered(foundList)
     }
 
+    const onClear = () => {
+        setSelected([])
+        onSelect([])
+    }
+
+    const selectAll = () => {
+        setSelected(options)
+        onSelect(options)
+    }
+
     return (
         <div>
             <div id="filter" style={style.filter}>
                 <div id="inside" style={style.inside}>
-                <hr/>
-                <input placeholder="weeee" onChange={(e)=> searchFilter(e.target.value)}/> 
+                <input style={{margin: '5px'}} placeholder="weeee" onChange={(e)=> searchFilter(e.target.value)}/>
+                <div style={style.buttonGr}>
+                    <button onClick={()=> onClear()} style={style.buttons}>clear</button> 
+                    <button onClick={()=>selectAll()} style={style.buttons}>select all</button>
+                </div>
                 <div id="options" style={style.options}>
                 {searchString != '' && filtered.length == 0 &&
                     <p>no results found</p>

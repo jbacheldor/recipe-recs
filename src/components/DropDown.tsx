@@ -4,8 +4,8 @@ import { useState } from "react"
 type Props = {
     options: string[],
     title?: string,
-    onSelect?: () => void,
-    selected: string[]
+    onSelect: (val: string[]) => void,
+    selected: string[],
 }
 
 const style = {
@@ -13,7 +13,7 @@ const style = {
         display: 'block',
         scrollY: 'true',
         height: '300px',
-
+        position: 'absolute',
         // overflowY: 'true'
     },
     inside: {
@@ -28,17 +28,23 @@ const style = {
     }
 }
 
-const DropDown:React.FC<Props> = ({options, selected}) => {
+const DropDown:React.FC<Props> = ({options, selected, onSelect}) => {
     const [select, setSelected] = useState(selected)
     const [filtered, setFiltered] = useState<string[]>([])
     const [searchString, setSearch] = useState('')
 
+
     const onUpdate = (key: string) => {
+        let newVal = []
         if(select.includes(key)) {
-            setSelected(select.filter((item)=> item != key))
+            newVal = select.filter((item)=> item != key)
+            setSelected(newVal)
         }else {
-            setSelected([...select, key])
+            newVal = [...select, key]
+            setSelected(newVal)
         }
+
+        onSelect(newVal)
     }
 
     const searchFilter = (value: string) => {
@@ -63,32 +69,34 @@ const DropDown:React.FC<Props> = ({options, selected}) => {
     }
 
     return (
-        <div id="filter" style={style.filter}>
-            <div id="inside" style={style.inside}>
-            <hr/>
-            <input placeholder="weeee" onChange={(e)=> searchFilter(e.target.value)}/> 
-            <div id="options" style={style.options}>
-            {searchString != '' && filtered.length == 0 &&
-                <p>no results found</p>
-            }
-            {filtered.length > 0 && filtered.map((key)=> {
-                return (
-                    <label>
-                        <input checked={select.includes(key)} onChange={()=> onUpdate(key)} type='checkbox' value={key}/>
-                        {key}
-                    </label>
-                )
-            })
-            }
-            {searchString == '' && options.map((key)=> {
-                return (
-                    <label>
-                        <input checked={select.includes(key)} onChange={()=> onUpdate(key)} type='checkbox' value={key}/>
-                        {key}
-                    </label>
-                )
-            })}
-            </div>
+        <div>
+            <div id="filter" style={style.filter}>
+                <div id="inside" style={style.inside}>
+                <hr/>
+                <input placeholder="weeee" onChange={(e)=> searchFilter(e.target.value)}/> 
+                <div id="options" style={style.options}>
+                {searchString != '' && filtered.length == 0 &&
+                    <p>no results found</p>
+                }
+                {filtered.length > 0 && filtered.map((key)=> {
+                    return (
+                        <label>
+                            <input checked={select.includes(key)} onChange={()=> onUpdate(key)} type='checkbox' value={key}/>
+                            {key}
+                        </label>
+                    )
+                })
+                }
+                {searchString == '' && options.map((key)=> {
+                    return (
+                        <label>
+                            <input checked={select.includes(key)} onChange={()=> onUpdate(key)} type='checkbox' value={key}/>
+                            {key}
+                        </label>
+                    )
+                })}
+                </div>
+                </div>
             </div>
         </div>
     )

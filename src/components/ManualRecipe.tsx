@@ -8,6 +8,12 @@ const style = {
     form: {
         display: 'flex',
         flexDirection: 'column',
+        alignItems: 'center'
+    },
+    labels: {
+        margin: '5px',
+        display: 'flex',
+        flexDirection: 'column'
     }
 }
 
@@ -16,13 +22,35 @@ type ingredients = {
     type: string
 }
 
+type formType = {
+    title: string,
+    time: string,
+    description: string,
+    difficulty: string,
+}
+
+const initialForm = {
+    title: '',
+    time: '',
+    description: '',
+    difficulty: 'easy'
+}
+
 const ManualRecipe:React.FC = () => {
-    const [form, setForm] = useState('')
-    const [steps, setSteps] = useState<string[]>([])
+    const [form, setForm] = useState<formType>(initialForm)
+    const [steps, setSteps] = useState<string[]>([''])
     const [ingredients, setIngredients] = useState<ingredients[]>([{amount: '', type: ''}])
 
     const onSubmit = (e: React.SubmitEvent) => {
         e.preventDefault()
+        
+    }
+
+    const updateForm = (e: React.ChangeEvent) => {
+        setForm({
+            ...form,
+            [e.target.ariaLabel || '']: e.target.value
+        })
     }
 
     const addNew = (val: string) => {
@@ -68,30 +96,30 @@ const ManualRecipe:React.FC = () => {
         <div style={style.formBody}>
             <p>please manually input your recipe here and then select done when you are finished</p>
             <form onSubmit={(e)=> onSubmit(e)} style={style.form}>
-                <label>
+                <label style={style.labels}>
                     title
-                    <input></input>
+                    <input aria-label="title" value={form.title} onChange={(e)=>updateForm(e)}></input>
                 </label>
-                <label>
+                <label style={style.labels}>
                     description
-                    <textarea></textarea>
+                    <textarea aria-label="description" value={form.description} onChange={(e)=>updateForm(e)} style={{border: '1px solid transparent', borderRadius: '8px', padding: '0.6em 1.2em', boxShadow: '0 2px 2px rgba(0, 0, 0, 0.2)'}}></textarea>
                 </label> 
-                <label>
+                <label  style={style.labels}>
                     estimated time
-                    <input></input>
+                    <input aria-label="time" value={form.time} onChange={(e)=>updateForm(e)}></input>
                 </label>
-                <label>
+                <label style={style.labels}>
                     difficulty level
-                    <select>
+                    <select aria-label="difficulty" value={form.difficulty} onChange={(e)=>updateForm(e)}>
                         <option>easy</option>
                         <option>medium</option>
                         <option>hard</option>
                     </select>
                 </label>
-                <div>
+                <div style={style.labels}>
                     <div>
                         <span>ingredients</span>
-                        <button onClick={()=>addNew('ingredients')}>+</button>
+                        <button style={{padding: '0 3px', margin: '3px'}} onClick={()=>addNew('ingredients')}>+</button>
                     </div>
                     {ingredients.map((key, index)=>  {
                         return (
@@ -109,10 +137,10 @@ const ManualRecipe:React.FC = () => {
                         )
                         })}
                 </div>
-                <div>
+                <div style={{margin: '10px 0'}}>
                     <div>
                         <span>steps</span>
-                        <button onClick={()=>addNew('steps')}>+</button>
+                        <button style={{padding: '0 3px', margin: '3px'}} onClick={()=>addNew('steps')}>+</button>
                     </div>
                     {steps.map((key, index)=>  {
                         return (
@@ -127,7 +155,7 @@ const ManualRecipe:React.FC = () => {
                         })}
                 </div>
 
-                <button >submit</button>
+                <button style={{width: 'fit-content', margin: '10px'}}>submit</button>
             </form>
         </div>
     )

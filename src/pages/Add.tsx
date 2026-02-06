@@ -12,14 +12,64 @@ const style = {
         display: 'flex',
         justifyContent: 'space-between',
         margin: '5px 10%',
+    },
+    fileUploads: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        margin: '5% 10%',
     }
+}
+
+type fileType = {
+    lastModified: number,
+    name: string,
+    size: number,
+    type: string,
+    webkitRelativePath: string
 }
 
 const AddRecipe:React.FC = () => {
     const [addStyle, setStyle] = useState('')
+    const [files, setFiles] = useState<fileType[] | null>([])
+    const [errorMsg, setMsg] = useState('')
 
     const updateStyle = (val: string) => {
         setStyle(val)
+    }
+
+    const onFileUpload = (e: React.ChangeEvent, type: string) => {
+        const filesLoaded = e.target.files
+
+        let keys = Object.keys(filesLoaded)
+        
+        let filtered: fileType[] = []
+
+        keys.forEach((val)=> {
+            let num = Number(val)
+            if(type == 'picture') {
+                if(filesLoaded[num].type == 'image/jpg' || 'image/png') filtered.push(filesLoaded[num])
+                
+                
+            }
+            if(type == 'file') {
+                if(filesLoaded[num].type == 'application/json') filtered.push(filesLoaded[num])
+            }
+        })
+        
+        if(files) {
+            const copy = files.slice()
+            setFiles(copy.concat(filtered))
+        }
+    }
+
+    const removeFiles = (index: number) => {
+        if(files){
+            const copy = files.slice()
+            const first = files.slice(0, index)
+            const second = files.slice(index+1, copy?.length)
+            setFiles(first.concat(second))
+        }
     }
 
     return (
@@ -39,13 +89,26 @@ const AddRecipe:React.FC = () => {
                 <ManualRecipe/>
             }
             {addStyle == 'file' && 
-                <div>
-                    option to select file or manually paste it in
+                <div style={style.fileUploads}>
+                    <span>Select this option if you have a json or txt file specifically for this app!</span>
+                    <input onChange={(e)=>onFileUpload(e, 'file')} type='file' accept=".json, .txt" multiple/>
+                    {files && files.map((val, index)=> {
+                        return (
+                            <div>
+                                <label>
+                                    {val.name}
+                                    <button onClick={()=> removeFiles(index)}>-</button>
+                                </label>
+                                </div>
+                        )
+                    })
+                    }
                 </div>
             }
             {addStyle == 'picture' &&
-                <div>
-                    <input type='file' accept=".pdf"/>
+                <div style={style.fileUploads}>
+                    <span>This option is great if you have a physical copy of a recipe that you want to scan in!</span>
+                    <input onChange={(e)=>onFileUpload(e, 'picture')} type='file' accept="image/jpeg, image/png" multiple/>
                 </div>
             }
             {addStyle == 'link' && 

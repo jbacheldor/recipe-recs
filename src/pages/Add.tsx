@@ -33,6 +33,8 @@ const AddRecipe:React.FC = () => {
     const [addStyle, setStyle] = useState('')
     const [files, setFiles] = useState<fileType[] | null>([])
     const [errorMsg, setMsg] = useState('')
+    const [links, setLinks] = useState<string[]>([])
+    const [currentLink, setCurrent] = useState('')
 
     const updateStyle = (val: string) => {
         setStyle(val)
@@ -72,6 +74,15 @@ const AddRecipe:React.FC = () => {
         }
     }
 
+    const addLinks = () => {
+        setLinks([...links, currentLink])
+        setCurrent('')
+    }
+
+    const removeLinks = (val: string) => {
+        setLinks(links.filter((value) => val != value))
+    }
+
     return (
         <div>
             <h3 style={{textAlign: 'center'}}>Upload / Add</h3>
@@ -103,19 +114,41 @@ const AddRecipe:React.FC = () => {
                         )
                     })
                     }
+                    <button>submit</button>
                 </div>
             }
             {addStyle == 'picture' &&
                 <div style={style.fileUploads}>
                     <span>This option is great if you have a physical copy of a recipe that you want to scan in!</span>
                     <input onChange={(e)=>onFileUpload(e, 'picture')} type='file' accept="image/jpeg, image/png" multiple/>
+                    {files && files.map((val, index)=> {
+                        return (
+                            <div>
+                                <label>
+                                    {val.name}
+                                    <button onClick={()=> removeFiles(index)}>-</button>
+                                </label>
+                                </div>
+                        )
+                    })
+                    }
+                    <button>submit</button>
                 </div>
             }
             {addStyle == 'link' && 
-                <div>
+                <div style={style.fileUploads}>
                     <label>
-                        <input placeholder="put link here"/>
+                        <input placeholder="put link here" value={currentLink} onChange={(e)=> setCurrent(e.target.value)}/>
+                        <button onClick={()=> addLinks()}>add link</button>
                     </label>
+                    {links && links.map((val) => {
+                        return (
+                            <div>
+                                <span>{val}</span>
+                                <button onClick={()=>removeLinks(val)}>-</button>
+                            </div>
+                        )
+                    })}
                     <button>submit</button>
                     {/* when done say like, thanks we'll process this and get back to you! */}
                 </div>
